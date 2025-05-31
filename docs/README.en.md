@@ -105,6 +105,6 @@ Pull requests and suggestions are always appreciated ❤️
 
 ## 📁 Files
 
-* `public/index.html` – Fully functional embeddable code
+* `index.html` – Fully functional embeddable code
 * `docs/README.ko.md` – Korean documentation
 * `docs/README.en.md` – English version (this file)

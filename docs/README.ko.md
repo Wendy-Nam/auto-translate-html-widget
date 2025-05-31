@@ -104,6 +104,6 @@ PR과 아이디어 제안은 언제든지 환영합니다 ❤️
 
 ## 📁 구성 파일
 
-* `public/index.html` – 실제 삽입 가능한 위젯 코드
+* `index.html` – 실제 삽입 가능한 위젯 코드
 * `docs/README.ko.md` – 한국어 문서
 * `docs/README.en.md` – 영어 문서
