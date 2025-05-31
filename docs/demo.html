@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Translation Widget Test</title>
+
+    <script src="../index.html"></script>
+</head>
+
+<body>
+    <h1>Widget Preview</h1>
+    <p>This is a test page to preview the translation widget.</p>
+    <!-- 🌐 Start of Multilingual Translate Widget -->
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 🧩 사용자 지정 가능 테마 변수 / Customizable Theme Variables -->
+    <style>
+        :root {
+            --wrapper-bg: #1f2937;
+            /* 바탕색 / Background (Slate-800) */
+            --wrapper-border: #374151;
+            /* 테두리 / Border (Slate-700) */
+            --label-color: #f8fafc;
+            /* 텍스트 / Label Text (Slate-50) */
+            --btn-bg: #334155;
+            /* 버튼 배경 / Button Background (Slate-700) */
+            --btn-hover-bg: #475569;
+            /* 버튼 hover / Button Hover Background (Slate-600) */
+            --btn-text: #f1f5f9;
+            /* 버튼 텍스트 / Button Text (Slate-100) */
+            --btn-active-bg: #fbbf24;
+            /* 선택된 버튼 배경 / Active Button Background (Yellow-400) */
+            --btn-active-text: #1f2937;
+            /* 선택된 버튼 텍스트 / Active Button Text (Slate-800) */
+        }
+
+        .lang-btn {
+            background-color: var(--btn-bg);
+            /* 기본 배경색 / Default background color */
+            color: var(--btn-text);
+            /* 텍스트 색상 / Text color */
+            transition: all 0.2s ease;
+            /* 부드러운 전환 효과 / Smooth transition */
+        }
+
+        .lang-btn:hover {
+            background-color: var(--btn-hover-bg);
+            /* 호버 시 배경색 / Hover background color */
+        }
+
+        .lang-btn.active {
+            background-color: var(--btn-active-bg) !important;
+            /* 활성화된 버튼 배경 / Active button background */
+            color: var(--btn-active-text) !important;
+            /* 활성화된 버튼 텍스트 / Active button text */
+        }
+    </style>
+
+    <!-- 🔒 Google 번역기 엘리먼트 (숨김 처리) / Google Translate element (hidden) -->
+    <div id="google_translate_element" class="hidden"></div>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- 🌍 언어 선택 UI / Language Switcher UI -->
+    <div id="lang-switcher" class="max-w-xs mt-4">
+        <div class="flex flex-col items-start gap-2 border p-3 shadow-sm rounded"
+            style="background-color: var(--wrapper-bg); border-color: var(--wrapper-border);">
+            <div class="flex items-center gap-2">
+                <!-- 텍스트 라벨(LANGUAGE)에 'notranslate' 클래스 적용 / Prevent label text from being translated -->
+                <span class="text-lg">🌐</span>
+                <span class="text-xl font-semibold notranslate" style="color: var(--label-color);">LANGUAGE</span>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-1">
+                <button class="lang-btn rounded px-2.5 py-0.5" data-lang="ko" title="한국어">
+                    <img src="https://tistory4.daumcdn.net/tistory/4029016/skin/images/ko.png" class="h-8 w-8" />
+                </button>
+                <button class="lang-btn rounded px-2.5 py-0.5" data-lang="en" title="English">
+                    <img src="https://tistory4.daumcdn.net/tistory/4029016/skin/images/en.png" class="h-8 w-8" />
+                </button>
+                <button class="lang-btn rounded px-2.5 py-0.5" data-lang="zh-CN" title="中文(简体)">
+                    <img src="https://tistory4.daumcdn.net/tistory/4029016/skin/images/zh-CN.png" class="h-8 w-8" />
+                </button>
+                <button class="lang-btn rounded px-2.5 py-0.5" data-lang="ja" title="日本語">
+                    <img src="https://tistory4.daumcdn.net/tistory/4029016/skin/images/ja.png" class="h-8 w-8" />
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🧠 동작 스크립트 / Behavior Script -->
+    <script>
+        // 🌐 Google 번역 위젯 초기화
+        // EN: Initialize Google Translate widget
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'ko', // 기본 페이지 언어 / Default page language
+                autoDisplay: false // 자동 팝업 비활성화 / Disable auto popup
+            }, 'google_translate_element');
+        }
+        // 언어코드 정규화 함수 (현재 zh-CN만 처리)
+        // EN: Normalize language code (currently only for zh-CN)
+        const normalizeLangCode = (code) => (code === 'zh-CN' ? 'zh-CN' : code);
+        const gtcombo = () => document.querySelector('.goog-te-combo');
+        const buttons = document.querySelectorAll('.lang-btn');
+        const defaultLang = 'ko';
+
+        // URL 파라미터 추출 함수
+        // EN: Extract query parameter from URL
+        const getUrlParam = (name) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        };
+
+        // 선택된 버튼 스타일 갱신
+        // EN: Highlight active language button
+        const updateStyles = (selected) => {
+            buttons.forEach(btn => btn.classList.remove('active'));
+            const active = Array.from(buttons).find(b => b.dataset.lang === selected);
+            if (active) active.classList.add('active');
+        };
+
+        // 언어 적용 처리 함수
+        // EN: Apply language via dropdown + store in localStorage
+        const applyLang = (lang, force = false) => {
+            const currentLang = localStorage.getItem('selected-lang');
+            if (!force && currentLang === lang) return;
+            // Google 번역 셀렉트박스 DOM 가져오기
+            // EN: Get Google Translate dropdown DOM
+            const combo = gtcombo();
+            if (!combo) return;
+
+            combo.value = normalizeLangCode(lang); // 셀렉트박스 값 변경
+            combo.dispatchEvent(new Event('change')); // 변경 이벤트 트리거
+            localStorage.setItem('selected-lang', lang); // 로컬스토리지 저장
+            updateStyles(lang); // 버튼 스타일 갱신
+        };
+
+        // 초기 또는 페이지 이동 시 언어 재적용
+        // EN: Re-apply language on load or navigation
+        const reapplyLang = () => {
+            const urlLang = getUrlParam('lang'); // ?lang=xx URL 파라미터
+            const storedLang = localStorage.getItem('selected-lang');
+            const initialLang = urlLang || storedLang || defaultLang;
+
+            updateStyles(initialLang);
+            setTimeout(() => applyLang(initialLang, true), 50);
+        };
+
+        window.addEventListener('load', reapplyLang);
+        window.addEventListener('popstate', reapplyLang);
+
+        // pushState / replaceState 감지 후 언어 재적용
+        // EN: Intercept SPA navigation changes
+        const interceptHistoryChange = (fnName) => {
+            const original = history[fnName];
+            history[fnName] = function () {
+                original.apply(this, arguments);
+                reapplyLang();
+            };
+        };
+
+        interceptHistoryChange('pushState');
+        interceptHistoryChange('replaceState');
+        // 각 언어 버튼 클릭 시 언어 전환
+        // EN: Language button click event
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const toLang = btn.dataset.lang;
+                const currentLang = localStorage.getItem('selected-lang') || defaultLang;
+
+                if (toLang === currentLang) return; // 중복 클릭 방지 / prevent redundant action
+                applyLang(toLang, true);
+            });
+        });
+    </script>
+    <!-- 🌐 End of Multilingual Translate Widget -->
+    <!-- 🧪 Start of Example HTML Content -->
+    <h1>Welcome to My Blog</h1>
+    <p>This is a sample paragraph written in English.</p>
+    <h2>여기는 한국어 문단입니다</h2>
+    <p>한국어로도 내용을 작성할 수 있습니다. 자동 번역이 어떻게 작동하는지 확인해보세요.</p>
+    <ul>
+        <li>Item 1: English</li>
+        <li>항목 2: 한국어</li>
+    </ul>
+    <a href="https://example.com">🔗 External Link</a>
+    <!-- 🧪 End of Example HTML Content -->
+</body>
+
+</html>
