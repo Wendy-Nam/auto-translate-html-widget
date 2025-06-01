@@ -176,16 +176,38 @@
     </script>
     <!-- 🌐 End of Multilingual Translate Widget -->
     <!-- 🧪 Start of Example HTML Content -->
-    <h1>Welcome to My Blog</h1>
-    <p>This is a sample paragraph written in English.</p>
-    <h2>여기는 한국어 문단입니다</h2>
-    <p>한국어로도 내용을 작성할 수 있습니다. 자동 번역이 어떻게 작동하는지 확인해보세요.</p>
-    <ul>
-        <li>Item 1: English</li>
-        <li>항목 2: 한국어</li>
-    </ul>
-    <a href="https://example.com">🔗 External Link</a>
-    <!-- 🧪 End of Example HTML Content -->
-</body>
+    <div class="min-h-screen bg-gray-100 py-10 px-4">
+        <!-- 블로그 소개 카드 -->
+        <div class="max-w-xl mx-auto rounded-2xl shadow-lg bg-white p-6 space-y-6">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-gray-800">Welcome to My Blog</h1>
+                <p class="mt-2 text-gray-600">Here you’ll find content in both English and Korean!</p>
+            </div>
+            <!-- 내용 영역 -->
+            <div class="space-y-4 text-gray-700">
+                <p>This is a sample paragraph written in English.</p>
 
+                <h2 class="text-xl font-semibold text-blue-600">여기는 한국어 문단입니다</h2>
+                <p>한국어로도 내용을 작성할 수 있습니다. 자동 번역이 어떻게 작동하는지 확인해보세요.</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li>Item 1: English</li>
+                    <li>항목 2: 한국어</li>
+                </ul>
+
+                <a href="https://example.com" class="inline-flex items-center gap-1 text-blue-500 hover:underline">
+                    🔗 External Link
+                </a>
+            </div>
+            <!-- 별점 및 후원 유도 -->
+            <div class="text-center pt-4 border-t border-gray-200">
+                <p class="text-sm text-gray-500 mb-2">💬 이 콘텐츠가 유익하셨다면,</p>
+                <p class="font-medium text-gray-700">⭐ 별표를 눌러주시거나, ☕ 커피 한 잔 후원해 주세요!</p>
+            </div>
+        </div>
+    </div>
+    <!-- 🧪 End of Example HTML Content -->
+    <!-- ☕ Ko-fi 위젯 스크립트 -->
+    <iframe id='kofiframe' src='https://ko-fi.com/wendynam/?hidefeed=true&widget=true&embed=true&preview=true'
+        style='border:none;width:100%;padding:4px;background:#f9f9f9;' height='712' title='wendynam'></iframe>
+</body>
 </html>
