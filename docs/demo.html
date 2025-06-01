@@ -220,7 +220,7 @@
             // 초기 로딩이 아니면 (언어 변경 시) 로딩 표시 후 숨김 / Show and hide loading on language change
             if (googleTranslateInitialized) {
                 showLoading(); // 언어 변경 시 로딩 표시 / Show loading on language change
-                setTimeout(hideLoading, 1800); // 🚨 딜레이 조정 가능 / You can adjust this delay as needed
+                setTimeout(hideLoading, 1500); // 🚨 딜레이 조정 가능 / You can adjust this delay as needed
             }
         };
 
@@ -249,7 +249,7 @@
 
                 if (toLang === currentLang) return; // 중복 클릭 방지 / prevent redundant action
                 applyLang(toLang, true);
-                setTimeout(hideLoading, 1000); // 언어 변경 후 1초 동안 로딩 표시 / Hide loading after 1 second
+                setTimeout(hideLoading, 100); // 언어 변경 후 0.1초 동안 로딩 표시 / Hide loading after 0.1 second
             });
         });
     </script>
