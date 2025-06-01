@@ -26,13 +26,16 @@
 * 🇰🇷 [한국어 안내](./docs/README.ko.md)
 * 🇺🇸 [English Guide](./docs/README.en.md)
 
+
 ### 🎥 Watch Demo
 
 > **https://youtu.be/5KuyPAIS09E**
 
 [![Watch the demo](./docs/thumbnail.png)](https://youtu.be/5KuyPAIS09E)
 
+## 🚀 Try it out
 
+[👉 Live Demo on GitHub Pages](https://your-username.github.io/your-repo-name/)
 
 ---
 
@@ -51,4 +54,8 @@
 * 오픈소스 활동이나 글로벌 커뮤니티에서 소통하며 성장해보고 싶은 개발자
 * 외국계 협업이나 제안을 대비해, 접근성 좋은 소개 페이지를 미리 준비해두고 싶은 분
 
+---
 
+## 🌟 Give it a Star
+
+If you found this helpful, please consider [starring the repo](https://github.com/your-username/your-repo-name)!
