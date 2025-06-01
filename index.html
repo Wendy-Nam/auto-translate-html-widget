@@ -130,7 +130,7 @@
 </div>
 <!-- 🧠 동작 스크립트 / Behavior Script -->
 <script>
-  // 🌐 Google 번역 위젯 초기화 
+  // 🌐 Google 번역 위젯 초기화
   // EN: Initialize Google Translate widget
   let googleTranslateInitialized = false;
 
@@ -140,7 +140,7 @@
       autoDisplay: false // 자동 팝업 비활성화 / Disable auto popup
     }, 'google_translate_element');
     googleTranslateInitialized = true;
-    hideLoading(); // 번역 위젯 초기화 완료 후 로딩 숨김 / EN: Hide loading after widget initialization
+    reapplyLang(); // 위젯 초기화 후 초기 언어 적용 시도 / Attempt initial language application after widget initialization
   }
   // 언어코드 정규화 함수 (현재 zh-CN만 처리)
   // EN: Normalize language code (currently only for zh-CN)
@@ -164,21 +164,6 @@
     if (active) active.classList.add('active');
   };
 
-  // 언어 적용 처리 함수
-  // EN: Apply language via dropdown + store in localStorage
-  const applyLang = (lang, force = false) => {
-    const currentLang = localStorage.getItem('selected-lang');
-    if (!force && currentLang === lang) return;
-    // Google 번역 셀렉트박스 DOM 가져오기 / Get Google Translate dropdown DOM
-    const combo = gtcombo();
-    if (!combo) return;
-
-    combo.value = normalizeLangCode(lang); // 셀렉트박스 값 변경 / Change dropdown value
-    combo.dispatchEvent(new Event('change')); // 변경 이벤트 트리거 / Trigger change event
-    localStorage.setItem('selected-lang', lang); // 로컬스토리지 저장 / Store in localStorage
-    updateStyles(lang); // 버튼 스타일 갱신 / Update button style
-  };
-
   // 로딩 오버레이 표시 함수
   // EN: Show loading overlay
   const loadingOverlay = document.getElementById('loading-overlay');
@@ -189,32 +174,72 @@
     loadingOverlay.classList.add('hidden');
   };
 
-
-  // 초기 또는 페이지 이동 시 언어 재적용
-  // EN: Re-apply language on load or navigation
-  const reapplyLang = () => {
-    // 초기 로딩 시에만 로딩 화면 표시 / Show loading screen only on initial load
-    if (!googleTranslateInitialized) {
-      showLoading(); // 로딩 오버레이 표시  / Show loading overlay
+  // 언어 적용 처리 함수
+  // EN: Apply language via dropdown + store in localStorage
+  const applyLang = (lang, force = false) => {
+    const currentLang = localStorage.getItem('selected-lang');
+    if (!force && currentLang === lang) {
+      // 현재 언어와 요청 언어가 같으면 아무것도 하지 않음
+      // EN: Do nothing if the current language is the same as the requested language
+      return;
     }
+
+    showLoading(); // 로딩 시작 / Show loading
+
+    // Google 번역 셀렉트박스 DOM 가져오기 / Get Google Translate dropdown DOM
+    const combo = gtcombo();
+    if (!combo) {
+      hideLoading(); // 콤보 박스가 없으면 로딩 숨김 / Hide loading if combo box is not available
+      updateStyles(currentLang || defaultLang); // 현재 선택된 언어에 맞춰 버튼 스타일 유지 / Maintain button style for the currently selected language
+      return;
+    }
+
+    combo.value = normalizeLangCode(lang); // 셀렉트박스 값 변경 / Change dropdown value
+    combo.dispatchEvent(new Event('change')); // 변경 이벤트 트리거 / Trigger change event
+    localStorage.setItem('selected-lang', lang); // 로컬스토리지 저장 / Store in localStorage
+    updateStyles(lang); // 버튼 스타일 갱신 / Update button style
+
+    // 약간의 딜레이 후 로딩 종료 (번역이 바로 적용되지 않을 수 있으므로)
+    // EN: End loading after a short delay (as translation may not be immediate)
+    setTimeout(hideLoading, 500);
+  };
+
+  // 초기 언어 적용 시도
+  // EN: Attempt to apply initial language
+  const applyInitialLang = () => {
     const urlLang = getUrlParam('lang'); // ?lang=xx URL 파라미터 / ?lang=xx URL parameter
     const storedLang = localStorage.getItem('selected-lang');
     const initialLang = urlLang || storedLang || defaultLang;
-
     updateStyles(initialLang);
     applyLang(initialLang, true);
-    // 초기 로딩이 아니면 (언어 변경 시) 로딩 표시 후 숨김 / Show and hide loading on language change
-    if (googleTranslateInitialized) {
-      showLoading(); // 언어 변경 시 로딩 표시 / Show loading on language change
-      setTimeout(hideLoading, 1500); // 🚨 딜레이 조정 가능 / You can adjust this delay as needed
+  };
+
+  // 페이지 상태 변경 시 언어 재적용
+  // EN: Re-apply language on page state change
+  const reapplyLang = () => {
+    const storedLang = localStorage.getItem('selected-lang');
+    if (storedLang) {
+      updateStyles(storedLang);
+      applyLang(storedLang, true);
+    } else {
+      applyInitialLang(); // localStorage에 없으면 URL 파라미터 또는 기본 언어 적용 / If not in localStorage, apply from URL parameter or default language
     }
   };
 
-  window.addEventListener('load', reapplyLang);
+  window.addEventListener('load', () => {
+    // Google Translate Element가 초기화된 후에 초기 언어 적용 시도
+    // EN: Attempt initial language application after Google Translate Element is initialized
+    const checkInitInterval = setInterval(() => {
+      if (googleTranslateInitialized) {
+        reapplyLang();
+        clearInterval(checkInitInterval);
+      }
+    }, 100); // 100ms 간격으로 확인
+  });
   window.addEventListener('popstate', reapplyLang);
 
   // pushState / replaceState 감지 후 언어 재적용
-  // EN: Intercept SPA navigation changes
+  // EN: Re-apply language after pushState / replaceState
   const interceptHistoryChange = (fnName) => {
     const original = history[fnName];
     history[fnName] = function () {
@@ -225,17 +250,13 @@
 
   interceptHistoryChange('pushState');
   interceptHistoryChange('replaceState');
+
   // 각 언어 버튼 클릭 시 언어 전환
   // EN: Language button click event
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
-      showLoading(); // 언어 변경 시 로딩 표시 / Show loading on language change
       const toLang = btn.dataset.lang;
-      const currentLang = localStorage.getItem('selected-lang') || defaultLang;
-
-      if (toLang === currentLang) return; // 중복 클릭 방지 / prevent redundant action
       applyLang(toLang, true);
-      setTimeout(hideLoading, 100); // 언어 변경 후 0.1초 동안 로딩 표시 / Hide loading after 0.1 second
     });
   });
 </script>
