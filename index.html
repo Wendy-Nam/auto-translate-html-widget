@@ -190,7 +190,8 @@
     const combo = gtcombo();
     if (!combo) {
       hideLoading(); // 콤보 박스가 없으면 로딩 숨김 / Hide loading if combo box is not available
-      updateStyles(currentLang || defaultLang); // 현재 선택된 언어에 맞춰 버튼 스타일 유지 / Maintain button style for the currently selected language
+      updateStyles(currentLang ||
+        defaultLang); // 현재 선택된 언어에 맞춰 버튼 스타일 유지 / Maintain button style for the currently selected language
       return;
     }
 
@@ -222,7 +223,9 @@
       updateStyles(storedLang);
       applyLang(storedLang, true);
     } else {
-      applyInitialLang(); // localStorage에 없으면 URL 파라미터 또는 기본 언어 적용 / If not in localStorage, apply from URL parameter or default language
+      applyInitialLang(); 
+      // localStorage에 없으면 URL 파라미터 또는 기본 언어 적용 
+      // If not in localStorage, apply from URL parameter or default language
     }
   };
 
