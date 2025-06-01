@@ -4,8 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Translation Widget Test</title>
-
-    <script src="../index.html"></script>
 </head>
 
 <body>
@@ -184,7 +182,7 @@
                 const checkReadyInterval = setInterval(() => {
                     if (document.querySelector('.goog-te-combo')) {
                         googleTranslateReady = true;
-                        reapplyLang();
+                        // reapplyLang(); // load 이벤트 리스너에서 처리
                         clearInterval(checkReadyInterval);
                     }
                 }, 100);
@@ -332,13 +330,12 @@
         };
 
         window.addEventListener('load', () => {
-            // Google Translate Element가 초기화된 후에 초기 언어 적용 시도
-            // EN: Attempt initial language application after Google Translate Element is initialized
-            const checkInitInterval = setInterval(() => {
-                if (googleTranslateInitialized) {
-                    clearInterval(checkInitInterval);
+            const checkInitAndApply = setInterval(() => {
+                if (googleTranslateReady) {
+                    applyInitialLang();
+                    clearInterval(checkInitAndApply);
                 }
-            }, 100); // 100ms 간격으로 확인 / Check every 100ms
+            }, 100);
         });
         window.addEventListener('popstate', reapplyLang);
 

@@ -145,10 +145,13 @@
       console.error("Google Translate 스크립트 로드 실패 / Failed to load Google Translate script");
       if (retryCount < maxRetry) {
         retryCount++;
-        console.log(`Google Translate 다시 로드 시도 (${retryCount}/${maxRetry})... / Attempting to reload Google Translate (${retryCount}/${maxRetry})...`);
+        console.log(
+          `Google Translate 다시 로드 시도 (${retryCount}/${maxRetry})... / Attempting to reload Google Translate (${retryCount}/${maxRetry})...`
+          );
         setTimeout(loadGoogleTranslate, 3000); // 3초 후 재시도 / Retry after 3 seconds
       } else {
-        console.error("Google Translate 로드 실패: 최대 재시도 횟수 초과. / Failed to load Google Translate: Max retries exceeded.");
+        console.error(
+          "Google Translate 로드 실패: 최대 재시도 횟수 초과. / Failed to load Google Translate: Max retries exceeded.");
         hideLoading();
         // 사용자에게 알림 메시지 표시 (선택 사항) / Optionally display notification to the user
       }
@@ -166,7 +169,7 @@
       const checkReadyInterval = setInterval(() => {
         if (document.querySelector('.goog-te-combo')) {
           googleTranslateReady = true;
-          reapplyLang();
+          // reapplyLang(); // load 이벤트 리스너에서 처리
           clearInterval(checkReadyInterval);
         }
       }, 100);
@@ -175,15 +178,19 @@
           console.error("Google Translate Element 초기화 실패 / Failed to initialize Google Translate Element");
           if (retryCount < maxRetry) {
             retryCount++;
-            console.log(`Google Translate 다시 로드 시도 (${retryCount}/${maxRetry})... / Attempting to reload Google Translate (${retryCount}/${maxRetry})...`);
+            console.log(
+              `Google Translate 다시 로드 시도 (${retryCount}/${maxRetry})... / Attempting to reload Google Translate (${retryCount}/${maxRetry})...`
+              );
             // 스크립트 재로드를 통해 초기화 재시도 / Retry initialization by reloading the script
-            const scriptToRemove = document.querySelector('script[src*="translate.google.com/translate_a/element.js"]');
+            const scriptToRemove = document.querySelector(
+              'script[src*="translate.google.com/translate_a/element.js"]');
             if (scriptToRemove) {
               scriptToRemove.remove();
             }
             loadGoogleTranslate();
           } else {
-            console.error("Google Translate 로드 실패: 최대 재시도 횟수 초과. / Failed to load Google Translate: Max retries exceeded.");
+            console.error(
+              "Google Translate 로드 실패: 최대 재시도 횟수 초과. / Failed to load Google Translate: Max retries exceeded.");
             hideLoading();
             // 사용자에게 알림 메시지 표시 (선택 사항) / Optionally display notification to the user
           }
@@ -194,7 +201,9 @@
       hideLoading();
       if (retryCount < maxRetry) {
         retryCount++;
-        console.log(`Google Translate 다시 로드 시도 (${retryCount}/${maxRetry})... / Attempting to reload Google Translate (${retryCount}/${maxRetry})...`);
+        console.log(
+          `Google Translate 다시 로드 시도 (${retryCount}/${maxRetry})... / Attempting to reload Google Translate (${retryCount}/${maxRetry})...`
+          );
         // 스크립트 재로드를 통해 초기화 재시도 / Retry initialization by reloading the script
         const scriptToRemove = document.querySelector('script[src*="translate.google.com/translate_a/element.js"]');
         if (scriptToRemove) {
@@ -258,7 +267,8 @@
     const combo = gtcombo();
     if (!combo) {
       hideLoading(); // 콤보 박스가 없으면 로딩 숨김 / Hide loading if combo box is not available
-      updateStyles(currentLang || defaultLang); // 현재 선택된 언어에 맞춰 버튼 스타일 유지 / Maintain button style for the currently selected language
+      updateStyles(currentLang ||
+      defaultLang); // 현재 선택된 언어에 맞춰 버튼 스타일 유지 / Maintain button style for the currently selected language
       return;
     }
 
@@ -301,13 +311,12 @@
   };
 
   window.addEventListener('load', () => {
-    // Google Translate Element가 초기화된 후에 초기 언어 적용 시도
-    // EN: Attempt initial language application after Google Translate Element is initialized
-    const checkInitInterval = setInterval(() => {
-      if (googleTranslateInitialized) {
-        clearInterval(checkInitInterval);
+    const checkInitAndApply = setInterval(() => {
+      if (googleTranslateReady) {
+        applyInitialLang();
+        clearInterval(checkInitAndApply);
       }
-    }, 100); // 100ms 간격으로 확인 / Check every 100ms
+    }, 100);
   });
   window.addEventListener('popstate', reapplyLang);
 
