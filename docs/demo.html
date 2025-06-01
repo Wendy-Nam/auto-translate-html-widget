@@ -147,15 +147,101 @@
         // 🌐 Google 번역 위젯 초기화
         // EN: Initialize Google Translate widget
         let googleTranslateInitialized = false;
+        let googleTranslateReady = false;
+        let retryCount = 0;
+        const maxRetry = 3; // 최대 재시도 횟수 / Max retry attempts
+
+        function loadGoogleTranslate() {
+            const script = document.createElement('script');
+            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            script.async = true;
+            script.onerror = () => {
+                console.error("Google Translate 스크립트 로드 실패 / Failed to load Google Translate script");
+                if (retryCount < maxRetry) {
+                    retryCount++;
+                    console.log(
+                        `Google Translate 다시 로드 시도 (${retryCount}/${maxRetry})... / Attempting to reload Google Translate (${retryCount}/${maxRetry})...`
+                        );
+                    setTimeout(loadGoogleTranslate, 3000); // 3초 후 재시도 / Retry after 3 seconds
+                } else {
+                    console.error(
+                        "Google Translate 로드 실패: 최대 재시도 횟수 초과. / Failed to load Google Translate: Max retries exceeded."
+                        );
+                    hideLoading();
+                    // 사용자에게 알림 메시지 표시 (선택 사항) / Optionally display notification to the user
+                }
+            };
+            document.head.appendChild(script);
+        }
 
         function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'ko', // 기본 페이지 언어 / Default page language
-                autoDisplay: false // 자동 팝업 비활성화 / Disable auto popup
-            }, 'google_translate_element');
-            googleTranslateInitialized = true;
-            reapplyLang(); // 위젯 초기화 후 초기 언어 적용 시도 / Attempt initial language application after widget initialization
+            try {
+                new google.translate.TranslateElement({
+                    pageLanguage: 'ko', // 기본 페이지 언어 / Default page language
+                    autoDisplay: false // 자동 팝업 비활성화 / Disable auto popup
+                }, 'google_translate_element');
+                googleTranslateInitialized = true;
+                const checkReadyInterval = setInterval(() => {
+                    if (document.querySelector('.goog-te-combo')) {
+                        googleTranslateReady = true;
+                        reapplyLang();
+                        clearInterval(checkReadyInterval);
+                    }
+                }, 100);
+                setTimeout(() => {
+                    if (!googleTranslateReady) {
+                        console.error(
+                            "Google Translate Element 초기화 실패 / Failed to initialize Google Translate Element"
+                            );
+                        if (retryCount < maxRetry) {
+                            retryCount++;
+                            console.log(
+                                `Google Translate 다시 로드 시도 (${retryCount}/${maxRetry})... / Attempting to reload Google Translate (${retryCount}/${maxRetry})...`
+                                );
+                            // 스크립트 재로드를 통해 초기화 재시도 / Retry initialization by reloading the script
+                            const scriptToRemove = document.querySelector(
+                                'script[src*="translate.google.com/translate_a/element.js"]');
+                            if (scriptToRemove) {
+                                scriptToRemove.remove();
+                            }
+                            loadGoogleTranslate();
+                        } else {
+                            console.error(
+                                "Google Translate 로드 실패: 최대 재시도 횟수 초과. / Failed to load Google Translate: Max retries exceeded."
+                                );
+                            hideLoading();
+                            // 사용자에게 알림 메시지 표시 (선택 사항) / Optionally display notification to the user
+                        }
+                    }
+                }, 5000); // 5초 타임아웃 / 5-second timeout
+            } catch (error) {
+                console.error("Google Translate Element 초기화 오류:", error);
+                hideLoading();
+                if (retryCount < maxRetry) {
+                    retryCount++;
+                    console.log(
+                        `Google Translate 다시 로드 시도 (${retryCount}/${maxRetry})... / Attempting to reload Google Translate (${retryCount}/${maxRetry})...`
+                        );
+                    // 스크립트 재로드를 통해 초기화 재시도 / Retry initialization by reloading the script
+                    const scriptToRemove = document.querySelector(
+                        'script[src*="translate.google.com/translate_a/element.js"]');
+                    if (scriptToRemove) {
+                        scriptToRemove.remove();
+                    }
+                    loadGoogleTranslate();
+                } else {
+                    console.error(
+                        "Google Translate 로드 실패: 최대 재시도 횟수 초과. / Failed to load Google Translate: Max retries exceeded."
+                        );
+                    hideLoading();
+                    // 사용자에게 알림 메시지 표시 (선택 사항) / Optionally display notification to the user
+                }
+            }
         }
+
+        // 초기 로딩 시 Google Translate 로드 시작 / Start loading Google Translate on initial load
+        loadGoogleTranslate();
+
         // 언어코드 정규화 함수 (현재 zh-CN만 처리)
         // EN: Normalize language code (currently only for zh-CN)
         const normalizeLangCode = (code) => (code === 'zh-CN' ? 'zh-CN' : code);
@@ -193,8 +279,6 @@
         const applyLang = (lang, force = false) => {
             const currentLang = localStorage.getItem('selected-lang');
             if (!force && currentLang === lang) {
-                // 현재 언어와 요청 언어가 같으면 아무것도 하지 않음
-                // EN: Do nothing if the current language is the same as the requested language
                 return;
             }
 
@@ -226,7 +310,9 @@
             const storedLang = localStorage.getItem('selected-lang');
             const initialLang = urlLang || storedLang || defaultLang;
             updateStyles(initialLang);
-            applyLang(initialLang, true);
+            if (googleTranslateReady) {
+                applyLang(initialLang, true);
+            }
         };
 
         // 페이지 상태 변경 시 언어 재적용
@@ -235,10 +321,13 @@
             const storedLang = localStorage.getItem('selected-lang');
             if (storedLang) {
                 updateStyles(storedLang);
-                applyLang(storedLang, true);
+                if (googleTranslateReady) {
+                    applyLang(storedLang, true);
+                }
             } else {
-                applyInitialLang
-            (); // localStorage에 없으면 URL 파라미터 또는 기본 언어 적용 / If not in localStorage, apply from URL parameter or default language
+                applyInitialLang();
+                // localStorage에 없으면 URL 파라미터 또는 기본 언어 적용
+                // If not in localStorage, apply from URL parameter or default language
             }
         };
 
@@ -247,10 +336,9 @@
             // EN: Attempt initial language application after Google Translate Element is initialized
             const checkInitInterval = setInterval(() => {
                 if (googleTranslateInitialized) {
-                    reapplyLang();
                     clearInterval(checkInitInterval);
                 }
-            }, 100); // 100ms 간격으로 확인
+            }, 100); // 100ms 간격으로 확인 / Check every 100ms
         });
         window.addEventListener('popstate', reapplyLang);
 
