@@ -34,7 +34,7 @@
 
 ## 🚀 Try it out
 
-[👉 Live Demo on GitHub Pages](https://wendy-nam.github.io/auto-translate-html-widget/docs/demo.html/)
+[👉 Live Demo on GitHub Pages](https://wendy-nam.github.io/auto-translate-html-widget/docs/demo.html)
 
 ---
 
