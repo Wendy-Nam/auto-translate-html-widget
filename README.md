@@ -23,9 +23,8 @@
 
 ## 📘 Docs
 
-* 🇰🇷 [한국어 안내](./docs/README.ko.md)
 * 🇺🇸 [English Guide](./docs/README.en.md)
-
+* 🇰🇷 [한국어 안내](./docs/README.ko.md)
 
 ### 🎥 Watch Demo
 
@@ -35,15 +34,7 @@
 
 ## 🚀 Try it out
 
-[👉 Live Demo on GitHub Pages](https://your-username.github.io/your-repo-name/)
-
----
-
-## 🌐 Ideal for Everyone
-
-* Making your content readable for international visitors, regardless of the original language
-* Letting users browse in their own language without duplicating your site
-* Adding lightweight multilingual support to static sites, blogs, and personal pages
+[👉 Live Demo on GitHub Pages](https://wendy-nam.github.io/auto-translate-html-widget/docs/demo.html/)
 
 ---
 
@@ -56,6 +47,17 @@
 
 ---
 
+## 🌐 Ideal for Everyone
+
+* Making your content readable for international visitors, regardless of the original language
+* Letting users browse in their own language without duplicating your site
+* Adding lightweight multilingual support to static sites, blogs, and personal pages
+
+---
+
 ## 🌟 Give it a Star
 
-If you found this helpful, please consider [starring the repo](https://github.com/your-username/your-repo-name)!
+If you found this helpful, please consider [starring the repo](https://github.com/Wendy-Nam/auto-translate-html-widget)!
+
+> 이 저장소가 도움이 되셨다면 ⭐️ 별을 눌러주세요!  
+> 다양한 스타일 예제와 더불어, 지속적인 개선을 이어가는 데 많은 도움이 됩니다.
