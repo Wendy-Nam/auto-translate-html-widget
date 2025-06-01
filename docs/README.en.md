@@ -106,5 +106,6 @@ Pull requests and suggestions are always appreciated ❤️
 ## 📁 Files
 
 * `index.html` – Fully functional embeddable code
+* `docs/demo.html` – Widget test page / live demo site
 * `docs/README.ko.md` – Korean documentation
 * `docs/README.en.md` – English version (this file)

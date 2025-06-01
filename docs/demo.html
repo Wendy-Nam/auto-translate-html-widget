@@ -5,15 +5,75 @@
     <meta charset="UTF-8">
     <title>Translation Widget Test</title>
     <script src="../index.html"></script>
+    <!-- TailwindCSS + DaisyUI CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            plugins: [tailwindcss.typography],
+        }
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
-<body>
-    <h1>Widget Preview</h1>
-    <p>This is a test page to preview the translation widget.</p>
+<body class="bg-gray-50 p-12 w-full flex flex-col items-center justify-center bg-white-200">
+    <div class="flex flex-col gap-1 items-center justify-center max-w-3xl mx-auto">
+        <h1 class="font-black text-slate-800 text-5xl lg:max-w-5xl mb-4 notranslate">
+            Widget Preview</h1>
+        <p class="font-medium text-slate-800 mx-auto text-sm max-w-lg lg:max-w-lg lg:text-md">
+            This is a test page to preview the translation widget.</p>
+        <p class="font-light text-slate-500 mx-auto text-xs max-w-lg lg:text-sm">
+            Click the language buttons below to switch languages.</p>
+        <!-- Demo Notice Message -->
+        <div class="flex flex-row my-4 gap-4">
+            <!-- Button to Open Notice Modal -->
+            <label for="github_modal" class="btn btn-warning btn-sm">
+                ⚠️ Notice
+            </label>
+            <!-- FAB Button with Help Icon -->
+            <label for="modal-notranslate" class="btn btn-neutral btn-sm">
+                ❓ Extra Info
+            </label>
+        </div>
+    </div>
+    <div class="divider"></div>
+    <!-- English Notice -->
+    <div
+        class="md:w-2/3 lg:w-1/2 xl:w-1/2 2xl:w-1/3 mx-auto mb-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 text-sm px-5 py-4 rounded shadow-sm space-y-2">
+        <div class="font-semibold text-base">⚠️ GitHub Pages CORS Notice</div>
+        <p>
+            GitHub Pages may block <strong>external requests</strong> (e.g., Google Translate), causing the widget to
+            fail after several toggles.
+        </p>
+        <p>
+            👉 Please test the widget on your <strong>local or personal website</strong>:
+        </p>
+        <ul class="list-disc list-inside text-xs">
+            <li><code class="bg-gray-100 px-1 py-0.5 rounded">docs/demo.html</code> – demo page with the widget embedded
+            </li>
+            <li><code class="bg-gray-100 px-1 py-0.5 rounded">index.html</code> – widget source only</li>
+        </ul>
+    </div>
+
+    <!-- Korean Notice -->
+    <div
+        class="md:w-2/3 lg:w-1/2 xl:w-1/2 2xl:w-1/3 mx-auto mb-6 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 text-sm px-5 py-4 rounded shadow-sm space-y-2">
+        <div class="font-semibold text-base">⚠️ GitHub Pages 요청 제한 안내</div>
+        <p>
+            GitHub Pages에서는 <strong>외부 요청</strong>(예: Google 번역)이 차단되어, 여러 번 언어를 변경하면 위젯이 작동하지 않을 수 있습니다.
+        </p>
+        <p>
+            👉 <strong>로컬 또는 개인 웹사이트</strong>에서 테스트해보시길 권장드립니다:
+        </p>
+        <ul class="list-disc list-inside text-xs">
+            <li><code class="bg-gray-100 px-1 py-0.5 rounded">docs/demo.html</code> – 위젯이 포함된 데모 페이지</li>
+            <li><code class="bg-gray-100 px-1 py-0.5 rounded">index.html</code> – 위젯 단일 파일</li>
+        </ul>
+    </div>
+    <div class="divider"></div>
     <!-- 🌐 Start of Multilingual Translate Widget -->
     <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <!-- 🧩 사용자 지정 가능 테마 변수 / Customizable Theme Variables -->
     <style>
         :root {
@@ -160,12 +220,12 @@
                     retryCount++;
                     console.log(
                         `Google Translate 다시 로드 시도 (${retryCount}/${maxRetry})... / Attempting to reload Google Translate (${retryCount}/${maxRetry})...`
-                        );
+                    );
                     setTimeout(loadGoogleTranslate, 3000); // 3초 후 재시도 / Retry after 3 seconds
                 } else {
                     console.error(
                         "Google Translate 로드 실패: 최대 재시도 횟수 초과. / Failed to load Google Translate: Max retries exceeded."
-                        );
+                    );
                     hideLoading();
                     // 사용자에게 알림 메시지 표시 (선택 사항) / Optionally display notification to the user
                 }
@@ -191,12 +251,12 @@
                     if (!googleTranslateReady) {
                         console.error(
                             "Google Translate Element 초기화 실패 / Failed to initialize Google Translate Element"
-                            );
+                        );
                         if (retryCount < maxRetry) {
                             retryCount++;
                             console.log(
                                 `Google Translate 다시 로드 시도 (${retryCount}/${maxRetry})... / Attempting to reload Google Translate (${retryCount}/${maxRetry})...`
-                                );
+                            );
                             // 스크립트 재로드를 통해 초기화 재시도 / Retry initialization by reloading the script
                             const scriptToRemove = document.querySelector(
                                 'script[src*="translate.google.com/translate_a/element.js"]');
@@ -207,7 +267,7 @@
                         } else {
                             console.error(
                                 "Google Translate 로드 실패: 최대 재시도 횟수 초과. / Failed to load Google Translate: Max retries exceeded."
-                                );
+                            );
                             hideLoading();
                             // 사용자에게 알림 메시지 표시 (선택 사항) / Optionally display notification to the user
                         }
@@ -220,7 +280,7 @@
                     retryCount++;
                     console.log(
                         `Google Translate 다시 로드 시도 (${retryCount}/${maxRetry})... / Attempting to reload Google Translate (${retryCount}/${maxRetry})...`
-                        );
+                    );
                     // 스크립트 재로드를 통해 초기화 재시도 / Retry initialization by reloading the script
                     const scriptToRemove = document.querySelector(
                         'script[src*="translate.google.com/translate_a/element.js"]');
@@ -231,7 +291,7 @@
                 } else {
                     console.error(
                         "Google Translate 로드 실패: 최대 재시도 횟수 초과. / Failed to load Google Translate: Max retries exceeded."
-                        );
+                    );
                     hideLoading();
                     // 사용자에게 알림 메시지 표시 (선택 사항) / Optionally display notification to the user
                 }
@@ -288,7 +348,8 @@
             if (!combo) {
                 hideLoading(); // 콤보 박스가 없으면 로딩 숨김 / Hide loading if combo box is not available
                 updateStyles(currentLang ||
-                defaultLang); // 현재 선택된 언어에 맞춰 버튼 스타일 유지 / Maintain button style for the currently selected language
+                    defaultLang
+                ); // 현재 선택된 언어에 맞춰 버튼 스타일 유지 / Maintain button style for the currently selected language
                 return;
             }
 
@@ -352,7 +413,6 @@
 
         interceptHistoryChange('pushState');
         interceptHistoryChange('replaceState');
-
         // 각 언어 버튼 클릭 시 언어 전환
         // EN: Language button click event
         buttons.forEach(btn => {
@@ -363,34 +423,33 @@
         });
     </script>
     <!-- 🌐 End of Multilingual Translate Widget -->
-    <!-- 🧪 Start of Example HTML Content -->
-    <div class="bg-gray-100 py-10 px-4 mb-4">
+    <div class="w-full py-6 px-3 my-2">
         <!-- 블로그 소개 카드 -->
-        <div class="max-w-xl mx-auto rounded-2xl shadow-lg bg-white p-6 space-y-6">
+        <div
+            class="md:w-2/3 lg:w-1/2 xl:w-1/2 2xl:w-1/4 mx-auto rounded-xl shadow-md bg-white p-5 space-y-4 text-gray-700 break-words whitespace-normal">
             <div class="text-center">
-                <h1 class="text-3xl font-bold text-gray-800">Welcome to My Blog</h1>
-                <p class="mt-2 text-gray-600">Here you’ll find content in both English and Korean!</p>
+                <h1 class="text-2xl font-bold text-gray-800">🌐 Welcome to My Blog</h1>
+                <p class="text-sm text-gray-600 my-2">Content is available in English and Korean!</p>
             </div>
-            <!-- 내용 영역 -->
-            <div class="space-y-4 text-gray-700">
-                <p>This is a sample paragraph written in English.</p>
-
-                <h2 class="text-xl font-semibold text-blue-600">여기는 한국어 문단입니다</h2>
-                <p>한국어로도 내용을 작성할 수 있습니다. 자동 번역이 어떻게 작동하는지 확인해보세요.</p>
-                <ul class="list-disc list-inside space-y-1">
-                    <li>Item 1: English</li>
-                    <li>항목 2: 한국어</li>
+            <!-- 테스트 콘텐츠 -->
+            <div class="space-y-2 text-sm">
+                <p>This is a test paragraph in English.</p>
+                <h2 class="text-base font-semibold text-blue-600">이곳은 한국어 문단입니다</h2>
+                <p>번역 위젯이 한국어 콘텐츠도 자동 번역하는지 확인해보세요.</p>
+                <ul class="list-disc list-inside">
+                    <li>Item 1 (EN)</li>
+                    <li>항목 2 (KR)</li>
                 </ul>
-
                 <a href="https://example.com" class="inline-flex items-center gap-1 text-blue-500 hover:underline">
                     🔗 External Link
                 </a>
             </div>
-            <!-- 별점 및 후원 유도 -->
-            <div class="text-center pt-4 border-t border-gray-200">
-                <p class="text-sm text-gray-500 mb-2">💬 이 콘텐츠가 유익하셨다면,</p>
-                <p class="font-medium text-gray-700">⭐ 별표를 눌러주시거나, ☕ 커피 한 잔 후원해 주세요!</p>
+            <!-- 별점 및 후원 -->
+            <div class="text-center pt-3 border-t border-gray-200">
+                <p class="text-xs text-gray-500">💬 도움이 되셨다면,</p>
+                <p class="text-sm font-medium text-gray-700">⭐ 별표 or ☕ Ko-fi 한 잔 부탁드려요!</p>
             </div>
+
         </div>
     </div>
     <!-- 🧪 End of Example HTML Content -->
@@ -399,11 +458,56 @@
     <script>
         kofiWidgetOverlay.draw('wendynam', {
             'type': 'floating-chat',
-            'floating-chat.donateButton.text': 'Support me',
-            'floating-chat.donateButton.background-color': '#00b9fe',
-            'floating-chat.donateButton.text-color': '#fff'
+            'floating-chat.donateButton.text': 'Support Me',
+            'floating-chat.donateButton.background-color': '#facc15',
+            'floating-chat.donateButton.text-color': '#000000'
         });
     </script>
+    <!-- Modal Structure -->
+    <input type="checkbox" id="github_modal" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box max-w-xl bg-base-100">
+            <h3 class="font-bold text-lg mb-2">⚠️ GitHub-Pages Issue</h3>
+            <div class="divider"></div>
+            <p class="mb-2 text-sm">
+                <strong>[EN]</strong>
+                On <strong>GitHub Pages</strong>, language switching in this demo may stop working after several
+                toggles.<br />
+                This appears to be due to caching or request throttling (CORS) issues on GitHub's static hosting.<br />
+                The widget itself works fine on local environments and other public hosting platforms.
+            </p>
+            <div class="divider"></div>
+            <p class="mb-4 text-sm">
+                <strong>[KR]</strong>
+                본 데모 웹사이트는 <strong>GitHub Pages</strong>에서 언어를 여러 번 전환할 경우, 번역이 더 이상 적용되지 않는 문제가 발생할 수 있습니다.<br />
+                이는 GitHub의 정적 호스팅에서 발생하는 캐싱 또는 요청 제한(CORS) 때문일 수 있습니다.<br />
+                위젯 자체는 로컬 환경이나 블로그 등의 기타 퍼블릭 웹사이트에서 정상 작동합니다.
+            </p>
+            <div class="modal-action">
+                <label for="github_modal" class="btn btn-sm btn-neutral btn-soft">Close</label>
+                <a href="https://github.com/Wendy-Nam/auto-translate-html-widget/issues/3" target="_blank"
+                    class="btn btn-sm btn-warning">View Issue #3</a>
+            </div>
+        </div>
+    </div>
+    <!-- Help Modal Description -->
+    <input type="checkbox" id="modal-notranslate" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg mb-1">⚠️ Exclude From Translation</h3>
+            <div class="divider"></div>
+            <span class="notranslate badge badge-neutral badge-md
+            badge-outline badge-info outline-3
+            mt-1 mb-3">notranslate</span>
+            <p class="text-sm">
+                Add this class to any element you want to keep in its
+                original language.
+            </p>
+            <div class="modal-action">
+                <label for="modal-notranslate" class="btn btn-sm btn-neutral">Close</label>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
