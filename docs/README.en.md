@@ -15,7 +15,7 @@
 
 ## 📦 Installation (General)
 
-1. Add the contents of `widget.html` to any HTML-injectable section
+1. Add the contents of `index.html` to any HTML-injectable section
 2. Place it inside a sidebar, footer, or header area
 3. Customize colors, layout, or language set as needed
 4. Share a link with `?lang=xx` to allow users to land on a pre-translated view
